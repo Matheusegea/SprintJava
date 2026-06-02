@@ -4,7 +4,6 @@ import java.text.Normalizer;
 
 public class RealizarAnalise {
 
-    // Banco de palavras positivas (Frases longas primeiro)
     private final String[] palavrasPositivas = {
         "satisfeito com o produto", "pretendo renovar", "estou satisfeito",
         "bom custo beneficio", "atendimento excelente", "atendimento bom",
@@ -22,7 +21,6 @@ public class RealizarAnalise {
         "agil", "feliz", "otimo", "otima", "show", "top", "bom", "boa"
     };
 
-    // Banco de palavras negativas (Frases longas primeiro)
     private final String[] palavrasNegativas = {
         "nao gostei do produto", "nao gostei do sistema", "não gostei do produto", 
         "não gostei do sistema", "cancelar contrato", "quero cancelar", 
@@ -46,17 +44,13 @@ public class RealizarAnalise {
     public Analise executarAnalise(Reuniao reuniao) {
         Analise analise = new Analise();
         
-        // Mantemos o texto original limpo de acentos para o resumo salvar bonitinho
         String textoOriginal = reuniao.getTranscricao();
         
-        // Criamos cópias mutáveis do texto para realizar a contagem sem repetições
         String textoTratado = Normalizer.normalize(textoOriginal.toLowerCase(), Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 
-        // Contamos limpando as palavras encontradas do texto de teste
         int positivos = contarELimparPalavras(textoTratado, palavrasPositivas);
         int negativos = contarELimparPalavras(textoTratado, palavrasNegativas);
 
-        // Define os parâmetros com base na nova inteligência de margem neutra
         analise.setSentimento(definirSentimento(positivos, negativos));
         analise.setChanceRenovacao(calcularChanceRenovacao(positivos, negativos));
         analise.setRisco(definirRisco(positivos, negativos));
@@ -88,7 +82,7 @@ public class RealizarAnalise {
             return 75;
         }
         if (diferenca >= -1 && diferenca <= 1) {
-            return 50; // Retorno de 50% estável para a faixa neutra
+            return 50;
         }
         return 30;
     }
@@ -100,19 +94,16 @@ public class RealizarAnalise {
         return texto;
     }
 
-    // NOVA LÓGICA DE CONTAGEM: Evita o duplo cômputo (ex: "atendimento ruim" e "ruim")
     private int contarELimparPalavras(String texto, String[] bancoPalavras) {
         int contador = 0;
         String textoLocal = texto;
 
         for (String palavra : bancoPalavras) {
-            // Normaliza a palavra do banco também para garantir casamento perfeito de caracteres
             String palavraTratada = Normalizer.normalize(palavra.toLowerCase(), Normalizer.Form.NFD)
                     .replaceAll("[^\\p{ASCII}]", "");
 
             if (textoLocal.contains(palavraTratada)) {
                 contador++;
-                // Retira a expressão já contada substituindo por um espaço vazio
                 textoLocal = textoLocal.replaceFirst(palavraTratada, "");
             }
         }

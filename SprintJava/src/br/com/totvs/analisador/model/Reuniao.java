@@ -10,8 +10,7 @@ public class Reuniao {
     public Reuniao() {
     }
 
-    public Reuniao(int id, String data,
-                   String transcricao, Cliente cliente) {
+    public Reuniao(int id, String data,String transcricao, Cliente cliente) {
 
         this.id = id;
         this.data = data;

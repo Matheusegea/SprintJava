@@ -47,8 +47,6 @@ public class Main {
 
         String data;
         
-        // CORREÇÃO AQUI: Mudamos de "dd/MM/yyyy" para "dd/MM/uuuu"
-        // O 'uuuu' representa o ano de forma compatível com o ResolverStyle.STRICT
         DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/uuuu")
                                                         .withResolverStyle(ResolverStyle.STRICT);
 
@@ -58,7 +56,6 @@ public class Main {
             data = scanner.nextLine();
 
             try {
-                // Agora vai aceitar 20/05/2025 normalmente e continuar bloqueando 40/04/2025
                 LocalDate.parse(data, formatador);
                 break; 
             } catch (DateTimeParseException e) {

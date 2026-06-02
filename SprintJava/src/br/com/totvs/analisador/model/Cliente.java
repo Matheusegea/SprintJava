@@ -8,8 +8,7 @@ public class Cliente extends Usuario {
     public Cliente() {
     }
 
-    public Cliente(int id, String nome, String email,
-                   String empresa, String plano) {
+    public Cliente(int id, String nome, String email,String empresa, String plano) {
 
         super(id, nome, email);
 
