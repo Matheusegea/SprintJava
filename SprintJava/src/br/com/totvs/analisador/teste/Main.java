@@ -1,6 +1,10 @@
 package br.com.totvs.analisador.teste;
 
 import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 
 import br.com.totvs.analisador.model.Analise;
 import br.com.totvs.analisador.model.Cliente;
@@ -39,26 +43,33 @@ public class Main {
         System.out.print("Produto contratado: ");
         String plano = scanner.nextLine();
 
-        Cliente cliente = new Cliente(1,nome,email,empresa,plano);
+        Cliente cliente = new Cliente(1, nome, email, empresa, plano);
 
         String data;
+        
+        // CORREÇÃO AQUI: Mudamos de "dd/MM/yyyy" para "dd/MM/uuuu"
+        // O 'uuuu' representa o ano de forma compatível com o ResolverStyle.STRICT
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/uuuu")
+                                                        .withResolverStyle(ResolverStyle.STRICT);
 
         while (true) {
 
             System.out.print("Data que ocorreu a reunião (dd/MM/yyyy): ");
             data = scanner.nextLine();
 
-            if (data.matches("\\d{2}/\\d{2}/\\d{4}")) {
-                break;
+            try {
+                // Agora vai aceitar 20/05/2025 normalmente e continuar bloqueando 40/04/2025
+                LocalDate.parse(data, formatador);
+                break; 
+            } catch (DateTimeParseException e) {
+                System.out.println("Data inválida ou inexistente! Digite uma data real no formato dd/MM/yyyy");
             }
-
-            System.out.println("Data inválida! Digite no formato dd/MM/yyyy");
         }
 
         System.out.println("Digite a transcrição da reunião:");
         String transcricao = scanner.nextLine();
 
-        Reuniao reuniao = new Reuniao(1,data,transcricao,cliente);
+        Reuniao reuniao = new Reuniao(1, data, transcricao, cliente);
 
         RealizarAnalise service = new RealizarAnalise();
 
